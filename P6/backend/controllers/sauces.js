@@ -118,28 +118,35 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 exports.likeSauces = (req, res, next) => {
-  const like = req.body.like;
-  const userId = req.body.userId;
-  usersLiked =[];
-  usersDisliked = [];
+  Sauces.findOne({
+    _id: req.params.id
+  })
+  .then(
+    (sauces) => {
+      if(req.body.like == 1){
+        sauces.likes++;
+        sauces.usersLiked.push(req.body.userId)
+        sauces.save();
+      }
 
-  if (!like === 1 || !like === 0 || !like === -1 ){
-    return res.status(400).json({
-      error: error
-    });
-  
-  } else if (like === 1){
-    usersLiked.push(userId)
-    console.log(usersLiked)
-    console.log(like)
-  
-  } else if (like === -1){
-    usersDisliked.push(userId)
-    console.log(usersDisliked)
-    console.log("nombre de dislike " + like)
-  }
- 
-  
-  console.log("Dans le controllers de la route likeSauce")
-  
+      if(req.body.like == 0){
+        if(sauces.usersLiked.indexOf(req.body.userId)!= -1){
+          sauces.likes--;
+          sauces.usersLiked.splice(sauces.usersLiked.indexOf(req.body.userId),1)
+        }else{
+          sauces.dislikes--;
+          sauces.usersDisliked.splice(sauces.usersDisliked.indexOf(req.body.userId),1)
+        }
+        sauces.save();
+   
+      }
+
+      if(req.body.like == -1){
+        sauces.dislikes++;
+        sauces.usersDisliked.push(req.body.userId)
+        sauces.save();
+      }
+    })
+
+    .catch((error)=> {res.status(500).json({error:error})})
 };
