@@ -7,15 +7,7 @@ const userRoutes = require('./routes/user');
 
 dotenv.config();
 
-
-
-
-
 const app = express();
-
-
-
-
 
 mongoose.connect('mongodb+srv://tanguy:mfbzoWqoKf6BZhrx@cluster0.fzdmasi.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -41,9 +33,5 @@ app.use((req, res, next) => {
 
 app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
-
-
-
-
 
 module.exports = app;
